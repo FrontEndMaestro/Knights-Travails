@@ -27,29 +27,39 @@ function findMoves(arr) {
     });
 }
 
-function bfsTraversal(possibleMoves, endVertex) {
-  let queue = [];
+function bfsTraversal(startVertex, endVertex) {
+  let queue = [startVertex];
   let visitedVertices = [];
-  possibleMoves.forEach((element) => {
-    if (!visitedVertices.includes(element)) queue.push(element);
-  });
 
-  while (queue.length != 0) {
+  while (queue.length != 0 && !visitedVertices.includes(endVertex)) {
+console.log(" ")
+    console.log("queue", queue);
     let currentvertex = queue.shift();
-
     visitedVertices.push(currentvertex);
     let currentVertexMoves = findMoves(currentvertex);
+
     currentVertexMoves.forEach((element) => {
-      if (!visitedVertices.includes(element)) queue.push(element);
+      if (!comparison(element, visitedVertices)) queue.push(element);
     });
+    console.log("visited", visitedVertices);
+    if (comparison(endVertex, visitedVertices)) {
+      break;
+    }
   }
+  console.log("final visited", visitedVertices);
+}
+
+function comparison(currentVertex, visitedVertices) {
+  return visitedVertices.some((Vertex) => {
+    return currentVertex.every((element, index) => element === Vertex[index]);
+  });
 }
 
 function knightMoves(startVertex, endVertex) {
   let possibleMoves = findMoves(startVertex);
 
-  console.log(possibleMoves);
-  bfsTraversal(possibleMoves, endVertex);
+  console.log("possible moves", possibleMoves);
+  bfsTraversal(startVertex, endVertex);
 }
 
 //knightMoves([0, 0]);
