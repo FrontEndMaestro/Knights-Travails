@@ -28,25 +28,35 @@ function findMoves(arr) {
 }
 
 function bfsTraversal(startVertex, endVertex) {
+  let parentArray = [];
   let queue = [startVertex];
   let visitedVertices = [];
-
+  let previousVertex = startVertex;
+  let i = 0;
   while (queue.length != 0 && !visitedVertices.includes(endVertex)) {
-console.log(" ")
-    console.log("queue", queue);
+    console.log(" ");
     let currentvertex = queue.shift();
+    parentArray.push({ vertex: currentvertex, parent: previousVertex });
     visitedVertices.push(currentvertex);
     let currentVertexMoves = findMoves(currentvertex);
-
-    currentVertexMoves.forEach((element) => {
-      if (!comparison(element, visitedVertices)) queue.push(element);
+    currentVertexMoves.forEach((vertex) => {
+      if (!comparison(vertex, visitedVertices)) queue.push(vertex);
     });
     console.log("visited", visitedVertices);
     if (comparison(endVertex, visitedVertices)) {
       break;
     }
+    if (comparison(endVertex, queue)) {
+      parentArray.push({ vertex: endVertex, parent: currentvertex });
+      break;
+    }
+    previousVertex = currentvertex;
+    console.log("queue", queue);
+    console.log("final parent obj", parentArray);
   }
   console.log("final visited", visitedVertices);
+  console.log("final queue", queue);
+  console.log("final parent obj", parentArray);
 }
 
 function comparison(currentVertex, visitedVertices) {
@@ -57,7 +67,6 @@ function comparison(currentVertex, visitedVertices) {
 
 function knightMoves(startVertex, endVertex) {
   let possibleMoves = findMoves(startVertex);
-
   console.log("possible moves", possibleMoves);
   bfsTraversal(startVertex, endVertex);
 }
