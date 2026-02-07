@@ -27,50 +27,112 @@ function findMoves(arr) {
     });
 }
 
-function bfsTraversal(startVertex, endVertex) {
-  let parentArray = [];
-  let queue = [startVertex];
+function bfsTraversal(startVertex) {
+  let startVertexObj = { vertex: startVertex, parent: startVertex, cost: 0 };
+  let parentArray = [startVertexObj];
+  let queue = [startVertexObj];
   let visitedVertices = [];
-  let previousVertex = startVertex;
+  let previousVertex = startVertexObj;
   let i = 0;
-  while (queue.length != 0 && !visitedVertices.includes(endVertex)) {
-    console.log(" ");
+  while (queue.length != 0) {
+    i++;
+
     let currentvertex = queue.shift();
-    parentArray.push({ vertex: currentvertex, parent: previousVertex });
-    visitedVertices.push(currentvertex);
-    let currentVertexMoves = findMoves(currentvertex);
+    if (comparison(currentvertex, visitedVertices) == -1)
+      visitedVertices.push({
+        vertex: currentvertex.vertex,
+        parent:
+          currentvertex.parent.vertex == undefined
+            ? startVertex
+            : currentvertex.parent.vertex,
+        cost: currentvertex.cost,
+      });
+
+    let currentVertexMoves = findMoves(currentvertex.vertex);
     currentVertexMoves.forEach((vertex) => {
-      if (!comparison(vertex, visitedVertices)) queue.push(vertex);
+      if (findIndex(vertex, visitedVertices) == -1)
+        queue.push({
+          vertex,
+          parent: currentvertex.vertex,
+          cost: currentvertex.cost + 1,
+        });
+
+      let index = findIndex(vertex, parentArray);
+      if (index == -1) {
+        parentArray.push({
+          vertex: vertex,
+          parent: currentvertex.vertex,
+          cost: findParentCost(startVertex, parentArray, currentvertex) + 1,
+        });
+      } else if (index != -1) {
+        compareUpdateCost(parentArray, vertex, index);
+      }
     });
-    console.log("visited", visitedVertices);
-    if (comparison(endVertex, visitedVertices)) {
-      break;
-    }
-    if (comparison(endVertex, queue)) {
-      parentArray.push({ vertex: endVertex, parent: currentvertex });
-      break;
-    }
+
     previousVertex = currentvertex;
-    console.log("queue", queue);
-    console.log("final parent obj", parentArray);
+    //console.log("queue is", queue);
   }
-  console.log("final visited", visitedVertices);
-  console.log("final queue", queue);
-  console.log("final parent obj", parentArray);
+
+  return parentArray;
 }
 
-function comparison(currentVertex, visitedVertices) {
-  return visitedVertices.some((Vertex) => {
-    return currentVertex.every((element, index) => element === Vertex[index]);
-  });
+//updates cost if the new cost is smaller than than the current one
+function compareUpdateCost(parentArray, currentvertex, index) {
+  if (parentArray[index].cost > currentvertex.cost) {
+    parentArray[index].cost = currentvertex;
+    parentArray[index].parent = currentvertex.parent;
+  }
+}
+
+function findParentCost(startVertex, parentArray, parentVertex) {
+  if (
+    parentVertex.vertex[0] == startVertex[0] &&
+    parentVertex.vertex[1] == startVertex[1]
+  )
+    return 0;
+  let vertex = parentArray.find(
+    (element) =>
+      element.vertex[0] == parentVertex.vertex[0] &&
+      element.vertex[1] == parentVertex.vertex[1],
+  );
+  return vertex.cost;
+}
+
+//compare object with array of objects
+function comparison(currentVertex, VerticesArray) {
+  return VerticesArray.findIndex(
+    (element) =>
+      element.vertex[0] == currentVertex.vertex[0] &&
+      element.vertex[1] == currentVertex.vertex[1],
+  );
+}
+
+//compare array with array of objects
+function findIndex(currentVertex, VerticesArray) {
+  return VerticesArray.findIndex(
+    (element) =>
+      element.vertex[0] == currentVertex[0] &&
+      element.vertex[1] == currentVertex[1],
+  );
 }
 
 function knightMoves(startVertex, endVertex) {
-  let possibleMoves = findMoves(startVertex);
-  console.log("possible moves", possibleMoves);
-  bfsTraversal(startVertex, endVertex);
+  let parentArray = bfsTraversal(startVertex, endVertex);
+
+  //console.log("parent Array", parentArray);
+  console.log(`Shortest Path [${startVertex}] to [${endVertex}]`);
+  console.log(constructPath(startVertex, endVertex, parentArray));
 }
 
-//knightMoves([0, 0]);
-knightMoves([0, 0], [3, 3]);
-//console.log(findMoves([1, 2]));
+function constructPath(startVertex, endVertex, parentArray) {
+  let path = [];
+  let endIndex = findIndex(endVertex, parentArray);
+  let currentVertex = parentArray[endIndex];
+  while (JSON.stringify(currentVertex.vertex) != JSON.stringify(startVertex)) {
+    path.push(currentVertex.vertex);
+    currentVertex = parentArray[findIndex(currentVertex.parent, parentArray)];
+  }
+  path.push(startVertex);
+  return path.reverse();
+}
+knightMoves([3, 3], [0, 0]);
