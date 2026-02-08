@@ -1,5 +1,3 @@
-//function
-
 function findMoves(arr) {
   let x = arr[0];
   let y = arr[1];
@@ -33,12 +31,9 @@ function bfsTraversal(startVertex) {
   let queue = [startVertexObj];
   let visitedVertices = [];
   let previousVertex = startVertexObj;
-  let i = 0;
   while (queue.length != 0) {
-    i++;
-
     let currentvertex = queue.shift();
-    if (comparison(currentvertex, visitedVertices) == -1)
+    if (findIndexOfObject(currentvertex, visitedVertices) == -1)
       visitedVertices.push({
         vertex: currentvertex.vertex,
         parent:
@@ -70,13 +65,12 @@ function bfsTraversal(startVertex) {
     });
 
     previousVertex = currentvertex;
-    //console.log("queue is", queue);
   }
 
   return parentArray;
 }
 
-//updates cost if the new cost is smaller than than the current one
+//updates cost & parent if the new cost is smaller than than the current one
 function compareUpdateCost(parentArray, currentvertex, index) {
   if (parentArray[index].cost > currentvertex.cost) {
     parentArray[index].cost = currentvertex;
@@ -99,7 +93,7 @@ function findParentCost(startVertex, parentArray, parentVertex) {
 }
 
 //compare object with array of objects
-function comparison(currentVertex, VerticesArray) {
+function findIndexOfObject(currentVertex, VerticesArray) {
   return VerticesArray.findIndex(
     (element) =>
       element.vertex[0] == currentVertex.vertex[0] &&
@@ -119,8 +113,7 @@ function findIndex(currentVertex, VerticesArray) {
 function knightMoves(startVertex, endVertex) {
   let parentArray = bfsTraversal(startVertex, endVertex);
 
-  //console.log("parent Array", parentArray);
-  console.log(`Shortest Path [${startVertex}] to [${endVertex}]`);
+  console.log(`Shortest Path from [${startVertex}] to [${endVertex}]`);
   console.log(constructPath(startVertex, endVertex, parentArray));
 }
 
@@ -135,4 +128,4 @@ function constructPath(startVertex, endVertex, parentArray) {
   path.push(startVertex);
   return path.reverse();
 }
-knightMoves([3, 3], [0, 0]);
+knightMoves([0, 0], [4, 5]);
