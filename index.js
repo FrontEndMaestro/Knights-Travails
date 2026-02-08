@@ -20,7 +20,6 @@ function findMoves(arr) {
 
 function bfsTraversal(startVertex) {
   let startVertexObj = { vertex: startVertex, parent: startVertex };
-  let parentArray = [startVertexObj];
   let queue = [startVertexObj];
   let visitedVertices = [];
   let previousVertex = startVertexObj;
@@ -29,10 +28,7 @@ function bfsTraversal(startVertex) {
     if (findIndexOfObject(currentvertex, visitedVertices) == -1)
       visitedVertices.push({
         vertex: currentvertex.vertex,
-        parent:
-          currentvertex.parent.vertex == undefined
-            ? startVertex
-            : currentvertex.parent.vertex,
+        parent: currentvertex.parent,
       });
 
     let currentVertexMoves = findMoves(currentvertex.vertex);
@@ -42,20 +38,12 @@ function bfsTraversal(startVertex) {
           vertex,
           parent: currentvertex.vertex,
         });
-
-      let index = findIndex(vertex, parentArray);
-      if (index == -1) {
-        parentArray.push({
-          vertex: vertex,
-          parent: currentvertex.vertex,
-        });
-      }
     });
 
     previousVertex = currentvertex;
   }
 
-  return parentArray;
+  return visitedVertices;
 }
 
 //compare object with array of objects
@@ -94,4 +82,4 @@ function constructPath(startVertex, endVertex, parentArray) {
   path.push(startVertex);
   return path.reverse();
 }
-knightMoves([3, 3], [0, 0]);
+knightMoves([7, 7], [0, 0]);
