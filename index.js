@@ -26,7 +26,7 @@ function findMoves(arr) {
 }
 
 function bfsTraversal(startVertex) {
-  let startVertexObj = { vertex: startVertex, parent: startVertex, cost: 0 };
+  let startVertexObj = { vertex: startVertex, parent: startVertex };
   let parentArray = [startVertexObj];
   let queue = [startVertexObj];
   let visitedVertices = [];
@@ -40,7 +40,6 @@ function bfsTraversal(startVertex) {
           currentvertex.parent.vertex == undefined
             ? startVertex
             : currentvertex.parent.vertex,
-        cost: currentvertex.cost,
       });
 
     let currentVertexMoves = findMoves(currentvertex.vertex);
@@ -49,7 +48,6 @@ function bfsTraversal(startVertex) {
         queue.push({
           vertex,
           parent: currentvertex.vertex,
-          cost: currentvertex.cost + 1,
         });
 
       let index = findIndex(vertex, parentArray);
@@ -57,10 +55,7 @@ function bfsTraversal(startVertex) {
         parentArray.push({
           vertex: vertex,
           parent: currentvertex.vertex,
-          cost: findParentCost(startVertex, parentArray, currentvertex) + 1,
         });
-      } else if (index != -1) {
-        compareUpdateCost(parentArray, vertex, index);
       }
     });
 
@@ -70,27 +65,6 @@ function bfsTraversal(startVertex) {
   return parentArray;
 }
 
-//updates cost & parent if the new cost is smaller than than the current one
-function compareUpdateCost(parentArray, currentvertex, index) {
-  if (parentArray[index].cost > currentvertex.cost) {
-    parentArray[index].cost = currentvertex;
-    parentArray[index].parent = currentvertex.parent;
-  }
-}
-
-function findParentCost(startVertex, parentArray, parentVertex) {
-  if (
-    parentVertex.vertex[0] == startVertex[0] &&
-    parentVertex.vertex[1] == startVertex[1]
-  )
-    return 0;
-  let vertex = parentArray.find(
-    (element) =>
-      element.vertex[0] == parentVertex.vertex[0] &&
-      element.vertex[1] == parentVertex.vertex[1],
-  );
-  return vertex.cost;
-}
 
 //compare object with array of objects
 function findIndexOfObject(currentVertex, VerticesArray) {
@@ -128,4 +102,4 @@ function constructPath(startVertex, endVertex, parentArray) {
   path.push(startVertex);
   return path.reverse();
 }
-knightMoves([0, 0], [4, 5]);
+knightMoves([0, 0], [7, 7]);
