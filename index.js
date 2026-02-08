@@ -12,17 +12,10 @@ function findMoves(arr) {
     [x + 2, y - 1],
   ];
   //removing out of bound moves and sorting with 0th element having higher priority
-  return distinctMoves
-    .filter(
-      (element) =>
-        element[0] < 8 && element[0] >= 0 && element[1] < 8 && element[1] >= 0,
-    )
-    .sort((a, b) => {
-      if (a[0] - b[0] == 0) {
-        return a[1] - b[1];
-      }
-      return a[0] - b[0];
-    });
+  return distinctMoves.filter(
+    (element) =>
+      element[0] < 8 && element[0] >= 0 && element[1] < 8 && element[1] >= 0,
+  );
 }
 
 function bfsTraversal(startVertex) {
@@ -65,7 +58,6 @@ function bfsTraversal(startVertex) {
   return parentArray;
 }
 
-
 //compare object with array of objects
 function findIndexOfObject(currentVertex, VerticesArray) {
   return VerticesArray.findIndex(
@@ -102,4 +94,4 @@ function constructPath(startVertex, endVertex, parentArray) {
   path.push(startVertex);
   return path.reverse();
 }
-knightMoves([0, 0], [7, 7]);
+knightMoves([3, 3], [0, 0]);
